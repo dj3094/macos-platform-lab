@@ -2,8 +2,7 @@ name: Validate macOS Platform Config
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
 
 jobs:
@@ -16,16 +15,18 @@ jobs:
 
       - name: Validate PLIST files
         run: |
-          shopt -s nullglob
           for file in daemons/*.plist configs/*.plist; do
-            echo "Validating $file"
-            plutil -lint "$file"
+            if [ -f "$file" ]; then
+              echo "Validating $file"
+              plutil -lint "$file"
+            fi
           done
 
       - name: Validate shell scripts are executable
         run: |
-          shopt -s nullglob
           for script in scripts/*.sh deploy/*.sh; do
-            echo "Checking executable bit on $script"
-            test -x "$script"
+            if [ -f "$script" ]; then
+              echo "Checking executable bit on $script"
+              test -x "$script"
+            fi
           done
