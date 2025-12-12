@@ -16,14 +16,16 @@ jobs:
 
       - name: Validate PLIST files
         run: |
+          shopt -s nullglob
           for file in daemons/*.plist configs/*.plist; do
             echo "Validating $file"
             plutil -lint "$file"
           done
 
-      - name: Validate shell scripts exist and are executable
+      - name: Validate shell scripts are executable
         run: |
+          shopt -s nullglob
           for script in scripts/*.sh deploy/*.sh; do
-            echo "Checking $script"
+            echo "Checking executable bit on $script"
             test -x "$script"
           done
