@@ -1,0 +1,29 @@
+name: Validate macOS Platform Config
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Validate PLIST files
+        run: |
+          for file in daemons/*.plist configs/*.plist; do
+            echo "Validating $file"
+            plutil -lint "$file"
+          done
+
+      - name: Validate shell scripts exist and are executable
+        run: |
+          for script in scripts/*.sh deploy/*.sh; do
+            echo "Checking $script"
+            test -x "$script"
+          done
